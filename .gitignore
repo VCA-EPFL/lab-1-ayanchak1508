@@ -1,0 +1,11 @@
+*.log
+
+part_1_combinational/*.so
+part_1_combinational/build
+part_1_combinational/AluTest
+part_1_combinational/ArbiterTest
+part_1_combinational/ShifterTest
+
+part_2_vector_multiply/*.so
+part_2_vector_multiply/build
+part_2_vector_multiply/TbVD
