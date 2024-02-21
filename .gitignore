@@ -1,5 +1,3 @@
-*.log
-
 part_1_combinational/*.so
 part_1_combinational/build
 part_1_combinational/AluTest

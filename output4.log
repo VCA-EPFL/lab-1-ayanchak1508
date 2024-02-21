@@ -1,0 +1,2 @@
+Warning: file 'v1.hex' for memory 'a_memory' has a gap at addresses 64 to 255.
+Warning: file 'v2.hex' for memory 'b_memory' has a gap at addresses 64 to 255.
