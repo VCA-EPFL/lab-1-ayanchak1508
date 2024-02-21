@@ -42,7 +42,7 @@ module mkVectorDot (VD);
                             address: zeroExtend(pos_a),
                             datain: ?});
 
-        if (pos_a < dim*zeroExtend(i))
+        if (pos_a < dim*(zeroExtend(i)+1))      // Bug 1a: Elements belong from i*dim to (i+1)*dim-1
             pos_a <= pos_a + 1;
         else done_a <= True;
 
@@ -56,7 +56,7 @@ module mkVectorDot (VD);
                 address: zeroExtend(pos_b),
                 datain: ?});
 
-        if (pos_b < dim*zeroExtend(i))
+        if (pos_b < dim*(zeroExtend(i)+1))      // Bug 1b: Elements belong from i*dim to (i+1)*dim-1
             pos_b <= pos_b + 1;
         else done_b <= True;
     
@@ -67,10 +67,11 @@ module mkVectorDot (VD);
         let out_a <- a.portA.response.get();
         let out_b <- b.portA.response.get();
 
-        output_res <=  out_a*out_b;     
+        output_res <=  output_res + out_a*out_b; // Bug 2: Previously, it was just calculating element products and not accumulating them.
         pos_out <= pos_out + 1;
         
         if (pos_out == dim-1) begin
+            ready_start <= False;                // Bug 3: Should be ready for next conversion
             done_all <= True;
         end
 
@@ -85,12 +86,13 @@ module mkVectorDot (VD);
         ready_start <= True;
         dim <= dim_in;
         done_all <= False;
-        pos_a <= dim_in*zeroExtend(i);
-        pos_b <= dim_in*zeroExtend(i);
+        pos_a <= dim_in*zeroExtend(i_in);       // Bug 4a: Should be updated with new value of i_in and not previous value of i
+        pos_b <= dim_in*zeroExtend(i_in);       // Bug 4b: Should be updated with new value of i_in and not previous value of i
         done_a <= False;
         done_b <= False;
         pos_out <= 0;
         i <= i_in;
+        output_res <= 0;                        // Bug 5: Should be reset to 0 for next dot product
     endmethod
 
     method ActionValue#(Bit#(32)) response() if (done_all);
